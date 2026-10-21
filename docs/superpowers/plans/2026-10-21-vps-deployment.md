@@ -6,7 +6,7 @@
 
 **Current target (supersedes the VPS architecture below):** Paid Render Starter web service with a 1 GB persistent disk, using the existing Hobby workspace. No idle sleep. The VPS notes below record earlier preparation and provider changes.
 
-**Current status:** Live at https://dealsignal-48tc.onrender.com with walkthrough at `/guide`. Starter compute and the 1 GB persistent disk were created on 21 October 2026. Hosted API checks and persistence across redeployment passed. The user subsequently authorized server-side OpenAI credentials and publicly accessible paid analyses; one validated Aster live analysis is saved. Source is `https://github.com/parag-bitsp/Deal-Signal`. Automatic deployments are off.
+**Current status:** Live at https://dealsignal-48tc.onrender.com with walkthrough at `/guide` and resume link https://bit.ly/3TTC5rb. Starter compute and the 1 GB persistent disk were created on 21 October 2026. Hosted API checks and persistence across redeployment passed. Public live AI is disabled again at the user's request: the hosted key and sole saved AI test result were removed. Source is `https://github.com/parag-bitsp/Deal-Signal`. Automatic deployments are off.
 
 **Architecture:** One Node 24 container with a persistent SQLite volume, behind Caddy for HTTPS. The reverse proxy can later route two more apps on the same VPS. Start with seeded synthetic data and no OpenAI credentials.
 
@@ -16,7 +16,7 @@
 
 ## Global Constraints
 
-- Never include credentials in source or browser responses. The initial deployment had AI disabled; the user subsequently explicitly authorized a server-only OpenAI key and billed public analyses.
+- Never include credentials in source or browser responses. Keep public live AI disabled and the hosted key absent unless the user explicitly authorizes re-enabling it. Earlier authorization was revoked because of public API-credit abuse concerns.
 - Keep the existing local SQLite data and local preview settings usable.
 - No server purchase until provider, available instance and price are established.
 - Work in this project directory; Git was initialized during deployment preparation.
@@ -89,3 +89,6 @@
 - User asked to enable the API. Automatic review initially required explicit authorization for transmitting the local OpenAI key and public billable use. The user expressly approved both. Configured OPENAI_API_KEY, OPENAI_MODEL=gpt-5-mini, timeout and output limit directly in Render's server environment without logging or saving credential values. Deploy `dep-dbcbkalg1s2s739mcdk0` reached live.
 - Made exactly one paid hosted analysis request for opp-001. It completed with 3 validated claims, model gpt-5-mini-2025-08-07 and 2,777 total tokens. The first verification script read the baseline-only opportunity endpoint and was corrected to read saved liveAnalyses from /api/data; the follow-up verification was read-only and did not repeat the paid request. Confirmed the saved result in the browser and that Run live analysis again is enabled. /api/ai/status returns only configured and model.
 - Changed the Blueprint secret to sync:false, added the selected model and updated public deployment docs. The Blueprint passed Render's published JSON schema. Actual service environment was already configured and deployed directly; automatic source deployments remain off.
+- User raised the risk of malicious visitors draining API credits and selected synthetic-only operation. Removed OPENAI_API_KEY from the hosted Render service and redeployed the existing build (`dep-dbcc803l550s73d2lkb0` reached live). Local credentials were not changed. Restored the Blueprint's empty-key default to prevent accidental enabling on a future installation.
+- Verified publicly: /api/ai/status reports configured=false; a live OpenAI analysis request returns HTTP 503 before any provider call; synthetic analysis returns HTTP 200 with provider Simulated analysis; the guide, database health and all 150 deals work. Removed the sole saved deployment-test AI analysis only after matching its run ID and confirming there were no visitor actions/audit entries. No saved AI results remain and no paid verification requests were made.
+- Clarified the security boundary: Render manages hosting infrastructure, while the application must restrict who can trigger billed API work. Before key removal, a visitor could use the intended public endpoint to incur costs without obtaining the secret or compromising Render. Keep public live analysis disabled unless expressly reauthorized with suitable access and usage controls.

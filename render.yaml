@@ -23,7 +23,7 @@ services:
       - key: PIPELINE_DB
         value: /var/data/pipeline.db
       - key: OPENAI_API_KEY
-        sync: false
+        value: ""
       - key: OPENAI_MODEL
         value: gpt-5-mini
     disk:
