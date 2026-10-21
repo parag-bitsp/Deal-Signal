@@ -6,7 +6,7 @@
 
 **Current target (supersedes the VPS architecture below):** Paid Render Starter web service with a 1 GB persistent disk, using the existing Hobby workspace. No idle sleep. The VPS notes below record earlier preparation and provider changes.
 
-**Current status:** Live at https://dealsignal-48tc.onrender.com with walkthrough at `/guide`. Starter compute and the 1 GB persistent disk were created on 21 October 2026. Hosted API checks and persistence across redeployment passed; the demo was restored to its fresh synthetic seed. Source is `https://github.com/parag-bitsp/Deal-Signal`. Automatic deployments are off.
+**Current status:** Live at https://dealsignal-48tc.onrender.com with walkthrough at `/guide`. Starter compute and the 1 GB persistent disk were created on 21 October 2026. Hosted API checks and persistence across redeployment passed. The user subsequently authorized server-side OpenAI credentials and publicly accessible paid analyses; one validated Aster live analysis is saved. Source is `https://github.com/parag-bitsp/Deal-Signal`. Automatic deployments are off.
 
 **Architecture:** One Node 24 container with a persistent SQLite volume, behind Caddy for HTTPS. The reverse proxy can later route two more apps on the same VPS. Start with seeded synthetic data and no OpenAI credentials.
 
@@ -16,7 +16,7 @@
 
 ## Global Constraints
 
-- No paid AI calls or credentials included in the public deployment.
+- Never include credentials in source or browser responses. The initial deployment had AI disabled; the user subsequently explicitly authorized a server-only OpenAI key and billed public analyses.
 - Keep the existing local SQLite data and local preview settings usable.
 - No server purchase until provider, available instance and price are established.
 - Work in this project directory; Git was initialized during deployment preparation.
@@ -85,3 +85,7 @@
 - User confirmed the payment method was saved. Created paid service `srv-dbcbc9cs728c73ejqc0g` and 1 GB disk `dsk-dbcbc9ks728c73ejqcrg` atomically in Singapore. Initial deployment `dep-dbcbcass728c73ejqikg` reached `live` on commit `4d9ef8d351147da38368d645a9302ceb322ef368`, using Node 24.21.0. URL: `https://dealsignal-48tc.onrender.com`. The existing `twin` service was untouched.
 - Hosted verification passed: `tests/api.mjs`, HTTPS database health, 150 synthetic deals, guide HTML/JavaScript and AI `configured: false`. Saved a synthetic approval and audit, redeployed the existing build via `deploy_only` (`dep-dbcbddrncjis738vg8ig`), verified the record survived, then reset only after confirming there was exactly that one test action and one audit entry. The public demo is back to its fresh 150-deal state.
 - Render memory metrics during the smoke check ranged from 59,375,616 to 75,821,060 bytes, below the 512 MB service limit. Read back Starter plan, `/var/data` disk mount, source repository and disabled autodeploy. This is not a load test. Billing continues until the paid service and disk are deleted; no automatic end-of-month deletion is scheduled.
+- User reported the demo script page did not open a screen. Reproduced the full hosted guide workflow using `tests/demo-guide.mjs`: discovery, all six contextual links, source dialog, close-date history, follow-up review, scenario, decision trail, progress, mobile layout and reopen all passed. No application defect was reproduced; requested the failing page URL/button text. Generated screenshot differences were restored. No speculative application change was made.
+- User asked to enable the API. Automatic review initially required explicit authorization for transmitting the local OpenAI key and public billable use. The user expressly approved both. Configured OPENAI_API_KEY, OPENAI_MODEL=gpt-5-mini, timeout and output limit directly in Render's server environment without logging or saving credential values. Deploy `dep-dbcbkalg1s2s739mcdk0` reached live.
+- Made exactly one paid hosted analysis request for opp-001. It completed with 3 validated claims, model gpt-5-mini-2025-08-07 and 2,777 total tokens. The first verification script read the baseline-only opportunity endpoint and was corrected to read saved liveAnalyses from /api/data; the follow-up verification was read-only and did not repeat the paid request. Confirmed the saved result in the browser and that Run live analysis again is enabled. /api/ai/status returns only configured and model.
+- Changed the Blueprint secret to sync:false, added the selected model and updated public deployment docs. The Blueprint passed Render's published JSON schema. Actual service environment was already configured and deployed directly; automatic source deployments remain off.

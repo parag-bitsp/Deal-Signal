@@ -23,7 +23,9 @@ services:
       - key: PIPELINE_DB
         value: /var/data/pipeline.db
       - key: OPENAI_API_KEY
-        value: ""
+        sync: false
+      - key: OPENAI_MODEL
+        value: gpt-5-mini
     disk:
       name: dealsignal-data
       mountPath: /var/data

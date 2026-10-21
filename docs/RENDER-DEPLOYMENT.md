@@ -19,16 +19,16 @@ The native Node runtime is pinned to 24.21.0 in `.node-version`. The build expli
 
 `PIPELINE_DB=/var/data/pipeline.db` points to the persistent disk. Decisions and saved results should survive redeploys; verify this on the real service. The local development database is not uploaded, so the public demo starts with the synthetic seed.
 
-The public configuration explicitly leaves `OPENAI_API_KEY` empty. The walkthrough needs no API key or password. Visitors share the synthetic demo state. Live paid AI is not enabled.
+Live OpenAI analysis is enabled with the owner's explicit authorization. `OPENAI_API_KEY` is configured only in Render's server environment; it is absent from GitHub and browser responses. The Blueprint uses `sync: false` for this secret and selects `gpt-5-mini`. Set the secret in Render when creating a new service. Each visitor-triggered live analysis uses the owner's OpenAI API credits, separately from Render hosting. The walkthrough needs no visitor API key or password. Visitors share synthetic demo decisions and saved AI results.
 
 Automatic deployments are off initially. Subsequent changes are deployed deliberately after verification.
 
-Verified on 21 October 2026: Render's production build completed; public HTTPS, SQLite health, browser-origin writes, foreign-origin rejection, scoped API data, the guide and its JavaScript passed. Paid AI is disabled. A synthetic approval and audit entry survived a redeploy of the existing build, then the sole test approval was removed to restore the fresh 150-deal demo. Render reported memory usage below 76 MB during these checks; this is a smoke check, not a load test.
+Verified on 21 October 2026: Render's production build completed; public HTTPS, SQLite health, browser-origin writes, foreign-origin rejection, scoped API data, the guide and its JavaScript passed. A synthetic approval and audit entry survived a redeploy of the existing build, then the sole test approval was removed. Render reported memory usage below 76 MB during these checks; this is a smoke check, not a load test. After live AI was enabled, one Aster Manufacturing analysis completed with three validated claims and 2,777 total tokens and was saved. The guide's six browser navigation steps, mobile layout, progress and source inspection also passed without additional paid requests.
 
 ## Verify and maintain
 
 - Confirm the selected plan is **Starter**, not Free, and the disk is attached at `/var/data`.
-- Check `/api/health`, `/api/ai/status` (`configured: false`), `/guide`, navigation and the forecast scenario. Run `tests/api.mjs` with `BASE_URL` set to the public HTTPS URL.
+- Check `/api/health`, `/api/ai/status` (`configured: true` while live AI is enabled), `/guide`, navigation and the forecast scenario. Run `tests/api.mjs` with `BASE_URL` set to the public HTTPS URL. Avoid unnecessary paid analysis runs during routine checks.
 - Record a synthetic approval, redeploy once, and confirm it remains. Watch memory in Render's Metrics page before increasing traffic or enabling live AI.
 - Render manages HTTPS, health monitoring and restarts. It takes disk snapshots, but keep SQLite-consistent exports too: run `node deploy/backup.mjs` from the Render Shell, then download the generated database backup. This script includes committed WAL writes and verifies integrity. The VPS cron scripts are not used on Render.
 - A disk-backed service can have brief downtime during deployments. Paid hosting prevents idle sleep; it does not promise uninterrupted availability.
