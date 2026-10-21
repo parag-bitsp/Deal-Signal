@@ -2,6 +2,8 @@
 
 A local sales pipeline intelligence MVP for a fictional Indian B2B SaaS company. Every customer interaction is synthetic. All money is INR.
 
+[Open the live demo](https://dealsignal-48tc.onrender.com) or [start the guided walkthrough](https://dealsignal-48tc.onrender.com/guide). The demo uses shared synthetic data; no password is required.
+
 ## Start on this computer
 
 Double-click `Start-DealSignal.cmd`, or run:
@@ -99,7 +101,7 @@ No API key is needed for the simulated demo. Live analysis is opt-in and uses yo
 
 Workspace navigation selects an explicit demo persona. Revenue intelligence reads the organization; managers read their team; reps read their opportunities. The API enforces those scopes on detail, analysis, simulation and associated audit records. Persona selection is deliberately user-controlled for demonstrations; **it is not production authentication or tenant isolation**. Each browser has one active demo persona; use separate browser contexts for concurrent personas.
 
-This is a synthetic portfolio demo. Do not put real customer data in it. Paid, always-on Render hosting is configured in [the Render deployment guide](docs/RENDER-DEPLOYMENT.md), using persistent SQLite storage and managed HTTPS. No hosted service has been created yet. The public deployment starts without OpenAI credentials. An alternative [VPS guide](docs/VPS-DEPLOYMENT.md) is retained for reference. Production rollout would need real authentication, tenant isolation, ingestion/retention policies and representative evaluation. Deterministic measurements are computed from persisted sources; live model analysis runs are stored with provenance. No real forecast improvement, review-time savings or revenue recovery is claimed.
+This is a synthetic portfolio demo. Do not put real customer data in it. The [live demo](https://dealsignal-48tc.onrender.com) runs on paid, always-on Render Starter compute in Singapore with persistent SQLite storage and managed HTTPS; see [the Render deployment guide](docs/RENDER-DEPLOYMENT.md). The public deployment has no OpenAI credentials. An alternative [VPS guide](docs/VPS-DEPLOYMENT.md) is retained for reference. Production rollout would need real authentication, tenant isolation, ingestion/retention policies and representative evaluation. Deterministic measurements are computed from persisted sources; live model analysis runs are stored with provenance. No real forecast improvement, review-time savings or revenue recovery is claimed.
 
 ## Tests and evidence
 

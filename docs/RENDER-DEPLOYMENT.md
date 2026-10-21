@@ -1,6 +1,8 @@
 # DealSignal on paid Render hosting
 
-Render is the selected provider. OVHcloud identity verification is pending and that deployment is abandoned. No Render service has been created yet.
+The [live demo](https://dealsignal-48tc.onrender.com) and [guided walkthrough](https://dealsignal-48tc.onrender.com/guide) run on Render. The service was created on 21 October 2026 using Starter compute in Singapore with one 1 GB persistent disk mounted at `/var/data`.
+
+Source: [parag-bitsp/Deal-Signal](https://github.com/parag-bitsp/Deal-Signal). Management: [Render service dashboard](https://dashboard.render.com/web/srv-dbcbc9cs728c73ejqc0g). Automatic deployments are off. The earlier private `dealsignal` repository is retained separately; the deployed service uses `Deal-Signal`.
 
 The existing free Hobby workspace can run a paid **Starter web service**. Paid compute does not sleep when idle. The initial budget is **USD 7/month compute + USD 0.25/month for a 1 GB disk**, before tax and any usage overages. Do not upgrade the workspace to Pro merely to prevent sleeping. Each additional app needs its own service and, if needed, disk.
 
@@ -8,8 +10,8 @@ Sources: [paid services stay awake](https://render.com/docs/faq), [workspace pla
 
 ## Deploy
 
-1. Put the source in a private GitHub repository. Never include `.env*` credentials, local SQLite files, `.cache`, `.next`, `node_modules`, source archives or the SSH private key.
-2. Connect the repository to Render and create a Blueprint using root `render.yaml`. It selects exactly one paid Starter web service in Singapore with a 1 GB persistent disk. Review the service and disk cost shown by Render before creation.
+1. Push source changes to `parag-bitsp/Deal-Signal`. This repository is public. Never include `.env*` credentials, local SQLite files, `.cache`, `.next`, `node_modules`, source archives or the SSH private key.
+2. For a new installation, use root `render.yaml` to create exactly one paid Starter web service in Singapore with a 1 GB persistent disk. The existing service was created through Render's API with the equivalent configuration; do not create a duplicate Blueprint for it. Review the service and disk cost before creating another installation.
 3. Add your payment method directly in Render if the account does not already have one.
 4. Wait for the first build and the `/api/health` check to pass. Render provides an HTTPS `onrender.com` URL automatically; no domain purchase or Caddy setup is needed.
 
@@ -20,6 +22,8 @@ The native Node runtime is pinned to 24.21.0 in `.node-version`. The build expli
 The public configuration explicitly leaves `OPENAI_API_KEY` empty. The walkthrough needs no API key or password. Visitors share the synthetic demo state. Live paid AI is not enabled.
 
 Automatic deployments are off initially. Subsequent changes are deployed deliberately after verification.
+
+Verified on 21 October 2026: Render's production build completed; public HTTPS, SQLite health, browser-origin writes, foreign-origin rejection, scoped API data, the guide and its JavaScript passed. Paid AI is disabled. A synthetic approval and audit entry survived a redeploy of the existing build, then the sole test approval was removed to restore the fresh 150-deal demo. Render reported memory usage below 76 MB during these checks; this is a smoke check, not a load test.
 
 ## Verify and maintain
 

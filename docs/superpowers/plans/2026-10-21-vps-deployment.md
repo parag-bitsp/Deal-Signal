@@ -4,6 +4,10 @@
 
 **Goal:** Publish the existing no-password demo on a shared, always-on VPS.
 
+**Current target (supersedes the VPS architecture below):** Paid Render Starter web service with a 1 GB persistent disk, using the existing Hobby workspace. No idle sleep. The VPS notes below record earlier preparation and provider changes.
+
+**Current status:** Live at https://dealsignal-48tc.onrender.com with walkthrough at `/guide`. Starter compute and the 1 GB persistent disk were created on 21 October 2026. Hosted API checks and persistence across redeployment passed; the demo was restored to its fresh synthetic seed. Source is `https://github.com/parag-bitsp/Deal-Signal`. Automatic deployments are off.
+
 **Architecture:** One Node 24 container with a persistent SQLite volume, behind Caddy for HTTPS. The reverse proxy can later route two more apps on the same VPS. Start with seeded synthetic data and no OpenAI credentials.
 
 **Tech Stack:** Next.js 16, Node 24, Docker Compose, Caddy 2, Ubuntu 24.04 LTS.
@@ -15,7 +19,7 @@
 - No paid AI calls or credentials included in the public deployment.
 - Keep the existing local SQLite data and local preview settings usable.
 - No server purchase until provider, available instance and price are established.
-- Work in this project directory; it has no Git repository or worktree.
+- Work in this project directory; Git was initialized during deployment preparation.
 
 ## Review Focus
 
@@ -43,11 +47,11 @@
 
 ### Task 3: Publish and verify
 
-- [ ] Obtain the provider/account or existing VPS and SSH access from the user.
-- [ ] Confirm the available instance and recurring price before ordering.
-- [ ] Install Docker, automatic security updates and a firewall; upload only clean source.
-- [ ] Start the app and verify public HTTPS, walkthrough, same-origin writes and persistence across recreation.
-- [ ] Configure external uptime monitoring once the public URL and notification destination are available.
+- [x] Obtain authorized access to the selected Render workspace.
+- [x] Establish Starter compute plus a 1 GB disk at approximately USD 7.25/month before tax/usage; the user added the payment method directly to Render.
+- [x] Upload clean source and create one managed Node service with its persistent disk. Render manages HTTPS and runtime hosting; VPS setup is superseded.
+- [x] Verify public HTTPS, walkthrough assets, same-origin writes, cross-origin rejection, disabled paid AI and persistence across a real redeploy.
+- Render's database-aware health checks are active. A separate external uptime monitor is not configured.
 
 ## Progress
 
@@ -71,3 +75,13 @@
 - Render and GitHub integrations were found and suggested for installation/connection; neither connection is confirmed yet. No paid Render resource has been created. The source is not yet in Git, and there is no GitHub CLI/auth available locally.
 - Render preparation verified: `render.yaml` passed Render's published 2020-12 JSON schema via ajv-cli. The existing standalone artifact passed `tests/api.mjs`, guide and disabled-AI checks on port 3212 with the configured 384 MB V8 heap cap; measured local working set after those checks was 95.1 MB. A focused deployment reviewer found no Important/Critical defects. No new application code or broad regression run was needed for these configuration changes.
 - Initialized a local `main` Git repository and staged 76 source/documentation files, explicitly checking that credentials, local databases, private keys, dependencies, build artifacts and archives are excluded. No commit, remote repository, paid Render service or disk has been created. Render/GitHub connections are the remaining access dependency, followed by real hosted health and persistence verification.
+- Continued via local tooling because the suggested integrations remain uninstalled. Git Credential Manager already authenticates GitHub user `parag-bitsp`. Verified that account, checked staged source for credential patterns, created private `https://github.com/parag-bitsp/dealsignal`, committed `4d9ef8d`, and successfully pushed `main`. Credentials were used only in-process against GitHub and were not printed or saved into source. Existing Windows CRLF/trailing-blank formatting was left alone after an initial whitespace-only check flagged it.
+- Downloaded official Render CLI v2.30.0 from `render-oss/cli` and verified SHA-256 `8a2fa10a5b263fce90666a39e604ab71f9b31686356de3ae4ce61cfaad7771c1`. CLI authentication state will live in restricted `.cache/render-cli-auth` (Windows user and SYSTEM only). Browser-based device authorization is pending in running exec session 1198. The user has been sent the Render device authorization link. Do not print the saved CLI token.
+- Render's public OpenAPI specification confirms service creation accepts an atomic `serviceDetails.disk` configuration. The disk can therefore be attached during initial paid service creation. Spec cached in `.cache/render-openapi.json`. No Render service/disk or charge has been created yet; account authorization is the current dependency.
+- User completed Render CLI device authorization. Verified Render user `usr-db05ubvavr4c73e9jva0` and selected their existing `My Workspace` (`tea-db05ubvavr4c73e9jv4g`). Existing `twin` service is Free in Oregon and was not changed.
+- Attempted atomic creation of DealSignal Starter compute with a 1 GB `/var/data` disk in Singapore. Render returned HTTP 400: repository URL invalid or unfetchable. No DealSignal resource was created. The private GitHub repository exists and was pushed successfully; Render repository access is the remaining dependency. User was sent the official Render GitHub App installation/configuration link to add only `dealsignal` while keeping existing selections. Existing GCM credentials cannot list GitHub App installations (HTTP 403), so this one repository-selection action requires the user's GitHub session.
+- User created public `https://github.com/parag-bitsp/Deal-Signal` and asked to upload the project there. Verified the target had no refs, rechecked tracked source for credential patterns, added remote `public`, and pushed all 76 tracked files at `4d9ef8d351147da38368d645a9302ceb322ef368` to `main`. Verified the remote branch matches. The earlier private `dealsignal` repository remains as `origin`; no existing repository contents were overwritten.
+- Retried the authorized Render service creation using the new public `Deal-Signal` repository, after confirming no existing DealSignal service. Repository validation now succeeds, but Render returned HTTP 402: payment information required, with official billing URL `https://dashboard.render.com/billing`. No DealSignal service or disk was created. User was asked to add a payment method directly to Render, keeping the free Hobby workspace and the selected Starter + 1 GB disk configuration (approximately USD 7.25/month before tax/usage). Waiting for that payment-method step before creating the paid resource.
+- User confirmed the payment method was saved. Created paid service `srv-dbcbc9cs728c73ejqc0g` and 1 GB disk `dsk-dbcbc9ks728c73ejqcrg` atomically in Singapore. Initial deployment `dep-dbcbcass728c73ejqikg` reached `live` on commit `4d9ef8d351147da38368d645a9302ceb322ef368`, using Node 24.21.0. URL: `https://dealsignal-48tc.onrender.com`. The existing `twin` service was untouched.
+- Hosted verification passed: `tests/api.mjs`, HTTPS database health, 150 synthetic deals, guide HTML/JavaScript and AI `configured: false`. Saved a synthetic approval and audit, redeployed the existing build via `deploy_only` (`dep-dbcbddrncjis738vg8ig`), verified the record survived, then reset only after confirming there was exactly that one test action and one audit entry. The public demo is back to its fresh 150-deal state.
+- Render memory metrics during the smoke check ranged from 59,375,616 to 75,821,060 bytes, below the 512 MB service limit. Read back Starter plan, `/var/data` disk mount, source repository and disabled autodeploy. This is not a load test. Billing continues until the paid service and disk are deleted; no automatic end-of-month deletion is scheduled.
