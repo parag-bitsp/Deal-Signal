@@ -1,0 +1,30 @@
+# Paid, always-on demo. Keep the account's Hobby workspace; no Pro upgrade needed.
+services:
+  - type: web
+    name: dealsignal
+    runtime: node
+    region: singapore
+    plan: starter
+    numInstances: 1
+    autoDeployTrigger: "off"
+    buildCommand: >-
+      npx --yes pnpm@10.11.0 install --frozen-lockfile --prod=false --ignore-scripts
+      && npm run build
+      && cp -R .next/static .next/standalone/.next/
+    startCommand: node --max-old-space-size=384 .next/standalone/server.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_TELEMETRY_DISABLED
+        value: "1"
+      - key: HOSTNAME
+        value: 0.0.0.0
+      - key: PIPELINE_DB
+        value: /var/data/pipeline.db
+      - key: OPENAI_API_KEY
+        value: ""
+    disk:
+      name: dealsignal-data
+      mountPath: /var/data
+      sizeGB: 1

@@ -1,0 +1,17 @@
+node_modules
+.next
+.cache
+.git
+.env
+.env.*
+**/.env
+**/.env.*
+data
+*.db
+*.db-*
+*.sqlite*
+*.zip
+*.tar.gz
+*.tsbuildinfo
+docs
+tests

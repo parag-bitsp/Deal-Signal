@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+const base=process.env.BASE_URL??'http://127.0.0.1:3000';
+const health=await fetch(base+'/api/health');assert.equal(health.status,200);assert.deepEqual(await health.json(),{status:'ok',database:'ready'});
+const data=await(await fetch(base+'/api/data')).json();assert.equal(data.deals.length,150);
+const session=await fetch(base+'/api/session',{method:'POST',headers:{'Content-Type':'application/json',Origin:base},body:JSON.stringify({actor:'m1'})});assert.equal(session.status,200,'Same-origin browser writes must be accepted');
+const bad=await fetch(base+'/api/session',{method:'POST',headers:{'Content-Type':'application/json',Origin:'https://example.com'},body:JSON.stringify({actor:'m1'})});assert.equal(bad.status,403);
+const sim=await(await fetch(base+'/api/simulate',{method:'POST',headers:{'Content-Type':'application/json',Origin:base},body:JSON.stringify({overrides:[{id:'opp-001',category:'Best Case'}]})})).json();assert.equal(sim.delta,-2000000);
+const after=await(await fetch(base+'/api/data')).json();assert.equal(after.deals[0].category,'Commit');assert.deepEqual(after.deals,data.deals);
+const scoped=await(await fetch(base+'/api/data?team=t1')).json();assert.ok(scoped.deals.every(d=>scoped.reps.find(r=>r.id===d.ownerId).teamId==='t1'));assert.equal(scoped.summary.count,scoped.deals.length);
+const persona=await fetch(base+'/api/session',{method:'POST',headers:{'Content-Type':'application/json',Origin:base},body:JSON.stringify({actor:'r1'})});const cookie=persona.headers.get('set-cookie').split(';')[0];
+assert.equal((await fetch(base+'/api/opportunities/opp-002',{headers:{Cookie:cookie}})).status,404);
+assert.equal((await fetch(base+'/api/analyze',{method:'POST',headers:{Cookie:cookie,'Content-Type':'application/json'},body:JSON.stringify({dealId:'opp-002'})})).status,404);
+const own=await(await fetch(base+'/api/data',{headers:{Cookie:cookie}})).json();assert.ok(own.deals.every(d=>d.ownerId==='r1'));assert.ok(own.audit.every(a=>own.deals.some(d=>d.id===a.dealId)));
+console.log('PASS: browser-origin writes, cross-origin rejection, scenario isolation and scoped aggregates');

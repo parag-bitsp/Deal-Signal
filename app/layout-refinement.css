@@ -1,0 +1,301 @@
+/* Full viewport workspace, with a consistent navigation rail and reading scale. */
+:root { color-scheme: light; --muted: #657986; }
+body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 14px; }
+button, a, select, input { touch-action: manipulation; }
+h1, h2, h3 { text-wrap: balance; }
+button, a { scroll-margin-top: 140px; }
+.sidebar { width: 240px; z-index: 60; padding: 25px 16px 0; }
+.main-shell { margin-left: 240px; min-width: 0; }
+.main-content { max-width: none; padding: 28px 32px 22px; width: 100%; }
+.topbar { position: sticky; top: 0; z-index: 35; padding: 0 32px; }
+.breadcrumb { font-size: 12px; }
+.top-date { font-size: 12px; }
+.page-heading { margin-bottom: 22px; }
+.page-heading h1 { font-size: 30px; letter-spacing: -.8px; }
+.page-heading p { font-size: 13px; max-width: 80ch; }
+.page-kicker { display: none; }
+.brand { margin: 0 9px 27px; font-size: 22px; }
+.brand small { font-size: 10px; }
+.org-switch { font-size: 12px; padding: 12px; }
+.org-switch small { font-size: 11px; }
+.nav-label { font-size: 11px; letter-spacing: .3px; margin-bottom: 9px; }
+.sidebar nav a { display: flex; align-items: center; gap: 11px; padding: 12px; min-height: 44px; color: #b7c9d3; font-size: 13px; border-radius: 6px; }
+.sidebar nav a:hover { background: #223f4d; color: white; }
+.sidebar nav a.active { background: #2b5058; color: white; }
+.sidebar nav a.active svg { color: #8dd5c1; }
+.sidebar nav a:focus-visible { outline-color: #8bd7bd; }
+.sidebar-bottom { padding-top: 24px; }
+.demo-card > span { font-size: 12px; }
+.demo-card p, .demo-card button { font-size: 11px; }
+.profile { font-size: 12px; }
+.profile small { font-size: 10px; }
+.primary, .secondary { font-size: 12px; min-height: 40px; }
+.icon-button { min-width: 34px; min-height: 34px; }
+select { font-size: 12px; min-height: 38px; }
+.scope-bar { flex-wrap: wrap; }
+.asof { font-size: 11px; }
+.metrics-grid { gap: 16px; }
+.metric { padding: 18px; min-height: 134px; }
+.metric > span { font-size: 12px; }
+.metric strong { font-size: 31px; }
+.metric small { font-size: 11px; }
+.insight-strip p, .insight-strip button { font-size: 12px; }
+.card h2 { font-size: 16px; }
+.card { padding: 22px; }
+.charts-top { grid-template-columns: minmax(0, 1.65fr) minmax(310px, 1fr); gap: 20px; }
+.charts-top > * { min-width: 0; }
+.evidence-chart .muted { font-size: 12px; }
+.coverage-value { margin: 18px 0 12px; }
+.coverage-value span { font-size: 12px; }
+.band-labels, .band-labels strong { font-size: 12px; }
+.chart-note { font-size: 11px; margin-top: 16px; }
+.risk-body { margin-top: 15px; gap: 30px; }
+.risk-legend { font-size: 12px; gap: 17px; }
+.donut { width: 132px; height: 132px; }
+.donut > div { width: 102px; height: 102px; }
+.donut span { font-size: 11px; }
+.trend-chart svg { height: 150px; }
+.chart-legend { font-size: 11px; }
+.opportunities { padding: 22px 0 0; }
+.opportunities > .card-title { padding: 0 22px; }
+.card-title .tiny { font-size: 11px; }
+.table-tools { padding: 3px 22px 17px; flex-wrap: wrap; }
+.search-field { max-width: 440px; min-height: 38px; }
+.search-field input { font-size: 12px; }
+.search-field:focus-within { outline: 2px solid #389b83; outline-offset: 2px; }
+.filter-group select { font-size: 12px; }
+.text-button { font-size: 12px; }
+th { font-size: 12px; padding: 13px 16px; }
+td { font-size: 13px; padding: 16px; }
+.account-cell { min-height: 38px; }
+.account-cell strong { font-size: 13px; max-width: 260px; }
+.account-cell small { font-size: 11px; }
+.stage-cell { font-size: 12px; }
+.stage-cell small { font-size: 11px; }
+.gap-description { font-size: 12px; max-width: 260px; }
+.slip-note { font-size: 11px; }
+.badge { font-size: 11px; padding: 4px 8px; }
+.table-footer { font-size: 11px; }
+.table-footer .icon-button { width: 34px; height: 34px; }
+.row-arrow { width: 34px; height: 34px; }
+.owner-cell { font-size: 12px; }
+.soft-tag { font-size: 11px; }
+.rep-link { font-size: 13px; }
+.page-footer { font-size: 11px; }
+.skip-link { position: fixed; z-index: 150; left: 16px; top: -100px; background: white; color: #115e4e; padding: 14px 20px; border: 2px solid #147968; border-radius: 6px; }
+.skip-link:focus { top: 12px; }
+.nav-backdrop { display: none; }
+
+/* Investigation is a full page; source/review/scenario remain focused dialogs. */
+.has-investigation .main-content { display: none; }
+.deal-page { margin-left: 240px; min-width: 0; background: white; }
+.deal-page .deal-dialog { width: 100%; max-width: none; max-height: none; overflow: visible; border-radius: 0; box-shadow: none; }
+.deal-top { position: static; background: white; min-height: 55px; padding: 9px 32px; gap: 15px; }
+.deal-top > span { margin-left: auto; font-size: 12px; }
+.back-link { display: inline-flex; align-items: center; min-height: 36px; font-size: 13px; color: var(--teal); font-weight: 600; }
+.back-link::before { content: '‹'; font-size: 23px; line-height: 1; margin-right: 8px; }
+.back-link:hover { text-decoration: underline; text-underline-offset: 4px; }
+.deal-heading { padding: 25px 32px 20px; }
+.deal-heading h1 { font-size: 30px; }
+.deal-heading p { font-size: 13px; }
+.deal-stats { padding: 0 32px 24px; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.deal-stats span:not(.commit-tag) { font-size: 12px; }
+.deal-stats strong { font-size: 14px; }
+.commit-tag { font-size: 12px; }
+.deal-tabs { position: static; background: white; padding: 0 32px; gap: 28px; }
+.deal-tabs button { min-height: 47px; font-size: 13px; }
+.deal-content { grid-template-columns: minmax(0, 1fr) minmax(280px, 340px); }
+.deal-main { padding: 26px 32px; min-width: 0; }
+.deal-aside { position: sticky; top: 182px; align-self: start; padding: 26px 24px; min-width: 0; }
+.section-title h2 { font-size: 16px; }
+.investigation-note strong { font-size: 13px; }
+.investigation-note p { font-size: 12px; }
+.claim-row { padding: 19px; gap: 13px; }
+.claim-title h3 { font-size: 14px; }
+.claim-body p { font-size: 13px; color: #607784; }
+.claim-body .text-button { font-size: 12px; }
+.source-gap { font-size: 12px; }
+.confidence { font-size: 11px; color: #72848e; }
+.finding h3 { font-size: 14px; }
+.finding p, .finding .text-button, .method-note { font-size: 12px; }
+.copilot-label { font-size: 12px; }
+.copilot-card h2 { font-size: 20px; }
+.copilot-card p, .copilot-card > .tiny { font-size: 12px; }
+.action-people { font-size: 13px; }
+.action-people small { font-size: 11px; }
+.scenario-card h3 { font-size: 15px; }
+.scenario-card p, .scenario-card .secondary { font-size: 12px; }
+.coverage-card strong { font-size: 16px; }
+.coverage-card span, .deal-aside > .tiny { font-size: 11px; }
+.approval-state strong { font-size: 13px; }
+.approval-state p { font-size: 11px; }
+.source-dialog, .review-dialog, .brief-dialog, .scenario-dialog, .deal-dialog { overscroll-behavior: contain; }
+.review-dialog label, .review-dialog > p, .review-dialog textarea { font-size: 13px; }
+.approval-note { font-size: 12px; }
+.email-body { font-size: 15px; line-height: 1.8; }
+.source-meta { font-size: 13px; }
+.timeline-item h3 { font-size: 14px; }
+.timeline-item p, .timeline-item .tiny { font-size: 12px; }
+.evidence-quote { border-left: 3px solid #84baa8; margin: 12px 0; padding: 10px 13px; background: #f3f8f5; border-radius: 0 5px 5px 0; }
+.evidence-quote p { font-size: 13px; margin: 0 0 6px; }
+.live-analysis-control { padding: 20px; border: 1px solid #cddfd9; background: #f6faf8; border-radius: 8px; margin-bottom: 24px; }
+.live-control-title { display: flex; align-items: center; gap: 11px; }
+.live-control-title > div { flex: 1; min-width: 0; }
+.live-control-title h2 { font-size: 16px; }
+.live-control-title p { font-size: 12px; color: #718a7f; margin-top: 3px; }
+.live-control-icon { width: 36px; height: 36px; display: grid; place-items: center; color: #2c826b; background: #e5f0e9; border-radius: 8px; }
+.live-control-body { display: flex; align-items: center; gap: 22px; margin-top: 17px; }
+.live-control-body > p { flex: 1; font-size: 13px; color: #5e786c; max-width: 64ch; }
+.live-control-status { margin-top: 12px; font-size: 11px; color: #6a8077; }
+.live-analysis-control .error-inline { display: flex; gap: 8px; align-items: flex-start; margin: 14px 0 0; font-size: 12px; }
+.live-summary { padding-bottom: 22px; border-bottom: 1px solid var(--line); margin-bottom: 22px; }
+.live-summary > p { font-size: 14px; color: #4d6874; line-height: 1.8; max-width: 85ch; }
+.live-summary details { margin-top: 12px; color: #72868e; font-size: 12px; }
+.live-summary summary { cursor: pointer; }
+.spin { animation: rotate-spinner 1.2s linear infinite; }
+@keyframes rotate-spinner { to { transform: rotate(360deg); } }
+
+@media (max-width: 1150px) {
+ .sidebar { width: 216px; }
+ .main-shell, .deal-page { margin-left: 216px; }
+ .sidebar nav a { font-size: 12px; }
+ .main-content { padding: 24px; }
+ .charts-top { grid-template-columns: minmax(0, 1.4fr) minmax(260px, 1fr); }
+ .metric { padding: 16px; }
+ .metric > span { font-size: 11px; }
+ .metric strong { font-size: 27px; }
+ .metric small { font-size: 10px; }
+ .risk-body { gap: 15px; }
+ .risk-legend { font-size: 11px; }
+ .coverage-value span { display: block; margin: 5px 0 0; }
+ .deal-content { grid-template-columns: minmax(0,1fr) 280px; }
+ .deal-main, .deal-heading, .deal-aside { padding-left: 22px; padding-right: 22px; }
+ .deal-stats { padding-left: 22px; padding-right: 22px; }
+ .live-control-body { flex-direction: column; align-items: flex-start; gap: 12px; }
+}
+@media (max-width: 980px) {
+ .charts-top { grid-template-columns: 1fr; }
+ .risk-chart { display: none; }
+ .deal-content { grid-template-columns: 1fr; }
+ .deal-aside { position: static; border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+ .deal-main { border-right: 0; }
+ .scenario-card { margin: 0; }
+ .claim-title { flex-wrap: wrap; }
+ .sidebar { width: 200px; }
+ .main-shell, .deal-page { margin-left: 200px; }
+ .sidebar nav a { font-size: 11px; }
+ .brand { font-size: 20px; margin-left: 4px; gap: 8px; }
+}
+@media (max-width: 760px) {
+ .sidebar { width: min(290px, calc(100vw - 44px)); transform: translateX(-105%); visibility: hidden; }
+ .sidebar.mobile-open { transform: translateX(0); visibility: visible; }
+ .sidebar nav a { font-size: 14px; min-height: 46px; }
+ .sidebar-bottom { padding-top: 22px; }
+ .nav-backdrop { display: block; position: fixed; inset: 0; z-index: 50; background: #142d3b77; }
+ .main-shell, .deal-page { margin-left: 0; }
+ .topbar { height: 60px; padding: 0 14px; }
+ .main-content { padding: 22px 16px; }
+ .breadcrumb { font-size: 11px; }
+ .breadcrumb strong { max-width: 155px; }
+ .topbar .icon-button { min-height: 40px; min-width: 40px; }
+ .page-heading h1 { font-size: 27px; }
+ .page-heading p { font-size: 13px; }
+ .metrics-grid { gap: 10px; }
+ .metric { padding: 15px 13px; min-height: 144px; }
+ .metric > span { font-size: 11px; }
+ .metric strong { font-size: 28px; }
+ .metric small { font-size: 11px; }
+ .scope-bar select { font-size: 12px; min-height: 42px; }
+ .insight-strip p { font-size: 12px; }
+ .card { padding: 18px; }
+ .charts-top { gap: 0; }
+ .risk-chart { display: none; }
+ .card-title h2 { font-size: 15px; }
+ .coverage-value span { font-size: 12px; line-height: 1.6; }
+ .band-labels, .band-labels strong { font-size: 11px; }
+ .band-labels > span { flex-wrap: wrap; }
+ .band-labels strong { width: 100%; margin-left: 13px; }
+ .opportunities { padding: 18px 0 0; }
+ .opportunities > .card-title, .table-tools { padding-left: 16px; padding-right: 16px; }
+ .search-field { padding: 8px 10px; }
+ .filter-group select { min-height: 40px; font-size: 11px; }
+ .table-footer { font-size: 10px; padding-left: 14px; padding-right: 14px; }
+ .table-footer > div { gap: 2px; }
+ .page-footer { font-size: 10px; line-height: 1.7; }
+ .deal-top { padding: 8px 15px; min-height: 51px; }
+ .deal-top > span { display: none; }
+ .deal-top .icon-button { margin-left: auto; }
+ .back-link { font-size: 13px; }
+ .deal-heading { padding: 22px 16px 20px; }
+ .deal-heading h1 { font-size: 24px; }
+ .deal-heading > .badge { font-size: 10px; }
+ .deal-heading p { font-size: 12px; }
+ .company-logo { display: none; }
+ .deal-stats { padding: 0 16px 20px; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 17px; }
+ .deal-stats span:not(.commit-tag) { font-size: 11px; }
+ .deal-stats strong { font-size: 13px; }
+ .deal-tabs { padding: 0 16px; gap: 22px; }
+ .deal-tabs button { font-size: 12px; min-height: 45px; }
+ .deal-main { padding: 22px 16px; }
+ .deal-aside { padding: 20px 16px; grid-template-columns: 1fr; }
+ .section-title h2 { font-size: 15px; }
+ .section-title .soft-tag { font-size: 10px; }
+ .claim-row { padding: 16px 12px; gap: 10px; }
+ .claim-title h3 { font-size: 13px; }
+ .claim-body p { font-size: 13px; }
+ .confidence { font-size: 11px; line-height: 1.7; }
+ .claim-title { flex-direction: column; align-items: flex-start; gap: 7px; }
+ .live-analysis-control { padding: 16px; }
+ .live-control-title { flex-wrap: wrap; }
+ .live-control-title .badge { margin-left: 47px; }
+ .live-control-title h2 { font-size: 15px; }
+ .live-control-title p { font-size: 11px; }
+ .live-control-body .primary { width: 100%; min-height: 44px; }
+ .investigation-note strong, .investigation-note p { font-size: 12px; }
+ .claim-body .text-button { min-height: 32px; }
+ .dialog-actions .primary, .dialog-actions .secondary { font-size: 12px; }
+ .source-dialog, .review-dialog, .brief-dialog, .scenario-dialog { padding: 21px; }
+}
+@media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
+
+.fullscreen-button{display:inline-flex;align-items:center;gap:7px;min-height:36px;padding:7px 10px;border:1px solid #dae4e8;background:white;border-radius:6px;font-size:12px;color:#526f7c}.fullscreen-button:hover{background:#edf5f2}.nav-close{display:none}@media(max-width:760px){.fullscreen-button{min-width:36px;padding:7px}.fullscreen-button>span{display:none}.topbar-right{gap:7px}.nav-close{display:inline-flex;position:absolute;right:10px;top:13px;color:#d8e6ed}.brand{padding-right:18px}.brand small{font-size:9px}}
+
+.validation-note{border:1px solid #e2d6b6;background:#fff9ec;padding:12px;border-radius:5px;margin:10px 0;font-size:12px;color:#806b35}.validation-note strong{font-size:12px}.validation-note p{font-size:12px;margin:5px 0 0;color:#806b35}
+
+.demo-welcome{display:flex;align-items:center;gap:16px;padding:20px 22px;margin-bottom:24px;border:1px solid #c8ddd5;border-left:4px solid var(--teal);border-radius:7px;background:#f0f7f3;color:var(--ink)}
+.demo-welcome>svg{color:var(--teal)}
+.demo-welcome h2{font-size:15px;margin-bottom:4px}
+.demo-welcome p{color:#526b74;font-size:12px}
+.demo-welcome>.secondary{margin-left:auto;flex-shrink:0}
+.demo-guide-layout{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(250px,1fr);gap:24px;align-items:start}
+.demo-guide-main>h2{font-size:27px;line-height:1.25;margin:18px 0 12px;letter-spacing:-.6px;max-width:550px}
+.demo-guide-intro{max-width:68ch;color:#526b74;font-size:14px}
+.demo-start{display:inline-flex;margin-top:20px}
+.demo-guide-hint{color:#526b74;font-size:12px;margin-top:12px;max-width:64ch}
+.demo-walkthrough{margin:30px 0 0;padding-left:28px;list-style:decimal}
+.demo-walkthrough>li{padding:0 0 25px 10px;margin-bottom:25px;border-bottom:1px solid var(--line)}
+.demo-walkthrough>li:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0}
+.demo-walkthrough>li::marker{font-size:15px;font-weight:650;color:var(--teal)}
+.demo-walkthrough h3{font-size:17px;margin-bottom:9px}
+.demo-walkthrough p,.demo-guide-notes p{color:#526b74;font-size:13px;line-height:1.75;max-width:70ch}
+.demo-expected{background:#f2f7f5;border-left:2px solid #98bfb0;padding:12px 14px;margin:13px 0}
+.demo-expected strong{font-size:12px;color:#315e50;display:block;margin-bottom:4px}
+.demo-step-link{display:inline-flex;align-items:center;gap:7px;color:#116852;font-size:13px;font-weight:600;min-height:36px;text-decoration:underline;text-underline-offset:3px}
+.demo-guide-notes{display:grid;gap:18px}
+.demo-guide-notes h2{margin-bottom:12px}
+.demo-guide-notes p+p{margin-top:12px}
+.demo-script-dock{position:fixed;right:24px;bottom:20px;z-index:40;display:flex;flex-direction:column;align-items:flex-end;gap:10px;max-width:calc(100vw - 32px)}
+.demo-script-toggle{display:flex;align-items:center;gap:9px;border-radius:7px;background:#172e3c;color:#fff;padding:12px 17px;min-height:44px;font-weight:600;box-shadow:0 3px 12px #172e3c25}
+.demo-script-panel{width:380px;max-width:100%;background:white;border:1px solid #cbd9de;border-radius:9px;box-shadow:0 8px 32px #172e3c25;max-height:calc(100dvh - 160px);display:flex;flex-direction:column;overflow:hidden}
+.demo-script-heading{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--line);color:#526b74;font-size:12px}
+.demo-script-heading .icon-button{min-width:36px;min-height:36px}
+.demo-script-body{padding:16px 18px;overflow-y:auto;overscroll-behavior:contain}
+.demo-script-body h2{font-size:17px;margin-bottom:10px}
+.demo-script-body p{font-size:13px;color:#526b74}
+.demo-script-controls{display:flex;gap:8px;justify-content:space-between;padding:12px 16px 6px;border-top:1px solid var(--line)}
+.demo-script-controls button{min-height:40px;font-size:12px}
+.demo-script-full{font-size:12px;text-decoration:underline;color:#526b74;padding:9px 16px 14px;align-self:center}
+.page-footer{padding-bottom:70px}
+@media(min-width:1280px){.app-shell:has(.demo-script-panel) .main-shell,.app-shell:has(.demo-script-panel) .deal-page{margin-right:410px}.app-shell:has(.demo-script-panel) .deal-content{grid-template-columns:minmax(0,1fr)}.app-shell:has(.demo-script-panel) .deal-aside{position:static;border-top:1px solid var(--line)}.app-shell:has(.demo-script-panel) .demo-guide-layout{grid-template-columns:1fr}.app-shell:has(.demo-script-panel) .metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.app-shell:has(.demo-script-panel) .charts-top{grid-template-columns:1fr}.app-shell:has(.demo-script-panel) .risk-chart{display:none}.app-shell:has(.demo-script-panel) .demo-welcome{flex-wrap:wrap}}
+@media(max-width:1050px){.demo-guide-layout{grid-template-columns:1fr}.demo-guide-notes{grid-template-columns:repeat(3,minmax(0,1fr))}.demo-welcome{flex-wrap:wrap}.demo-welcome>.secondary{margin-left:39px}}
+@media(max-width:760px){.demo-welcome{padding:16px;gap:12px;align-items:flex-start}.demo-welcome>div{flex:1;min-width:0}.demo-welcome>.secondary{margin-left:35px}.demo-welcome h2{font-size:14px}.demo-guide-main>h2{font-size:24px}.demo-guide-notes{grid-template-columns:1fr}.demo-walkthrough{padding-left:22px}.demo-walkthrough>li{padding-left:4px}.demo-script-dock{right:16px;bottom:14px}.demo-script-panel{max-height:58dvh}.demo-script-toggle{padding:10px 14px}.demo-script-body{padding:14px}.demo-script-body h2{font-size:15px}}

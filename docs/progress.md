@@ -1,0 +1,14 @@
+# Ledger — work/implementation-plan.md
+Spec approved by user. Native execution; local project in this repository.
+Preflight: domain types feed store and API; same model serialized to UI. Scenario totals run on server. SQLite module stays server-only.
+Design: slate #152b39 sidebar; teal #12776b evidence; white #ffffff surfaces; background #f5f7f9; amber #b67519 gap; red #bd4d50 contradiction. Segoe UI type, clear tabular figures. Main distinctive element: evidence coverage band and side-by-side assertion/evidence investigation.
+
+Task 1 complete: 7 domain tests pass. Task 2 complete: 2 SQLite persistence/ownership tests pass. Task 3 build and TypeScript checks pass. Ruling: native SQLite replaces Prisma; plain CSS and accessible SVG charts replace Tailwind/Recharts to keep the UI smaller. Live LLM is explicitly deferred P1; UI labels all analysis simulated. Working directory is C:\Users\Public\Portfolio\dealsignal.
+
+Task 3 complete: browser journey passes source inspection, editable approval, persistence after reload, exact ₹20 lakh scenario delta, retained filters, all workspace navigation and mobile overflow. API checks pass same-origin writes, cross-origin rejection, persona-scoped data/detail/analysis, simulation isolation. 14 domain/store/scope tests pass. Final production build passes. All five code review issues and KPI-filter follow-up resolved. Historical charts reconstruct dated category events. Task 4 complete: README, launcher and screenshots saved. Final demo reset to zero decisions.
+
+Live AI and UI update complete: local .env and safe .env.example; Responses API adapter, raw-record context, strict output validation, persistent source-hashed live runs and consistent aggregate use. 21 unit tests passed. Browser checks pass full-page layout/nav, mobile menu, deep links, dialogs, KPI filters, original journey, missing-key behavior and mocked live response state. Final review race fixed: pending analysis blocks approval; completion preserves approved text. Production build passed after fix. No paid inference run. QA used separate verification-ui.db. User requested full viewport; app now has full-page investigations, semantic nav and Full screen control.
+
+Actual live verification: user configured the local key. Two successful OpenAI requests (gpt-5-mini-2025-08-07; 2259 and 2533 tokens). Model conflated finance status with purchase authorization; added transparent purchase-scope check preserving modelStatus and a validation note. Revalidated the saved response locally without another API call. Final statuses: budget Contradicted, approval Unverified, timeline Unverified. Final production build and 22 unit tests pass. Full-page saved live result opened for the user.
+
+UI scroll fix: removed sticky positioning and offsets from .deal-top and .deal-tabs on desktop/mobile. Browser regression reproduced before fix; now passes at 1440px and 390px. Production build/TypeScript pass. Business logic unchanged.

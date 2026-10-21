@@ -1,0 +1,3 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';
+import {createSeed} from '../lib/seed.ts';import {scopeData} from '../lib/scope.ts';
+test('persona scoping filters opportunities, actions and audit together',()=>{const data={...createSeed(),actions:[{id:'a',dealId:'opp-002'}],audit:[{id:1,dealId:'opp-002'}],snapshots:[]};const own=scopeData(data as never,'r1');assert.ok(own.deals.every(d=>d.ownerId==='r1'));assert.equal(own.actions.length,0);assert.equal(own.audit.length,0);const manager=scopeData(data as never,'m1');assert.ok(manager.deals.every(d=>data.reps.find(r=>r.id===d.ownerId)?.teamId==='t1'));assert.equal(scopeData(data as never,'revenue').deals.length,150);assert.throws(()=>scopeData(data as never,'unknown'));});
