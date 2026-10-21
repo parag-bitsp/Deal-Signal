@@ -2,7 +2,7 @@
 
 The [live demo](https://dealsignal-48tc.onrender.com) and [guided walkthrough](https://dealsignal-48tc.onrender.com/guide) run on Render. The service was created on 21 October 2026 using Starter compute in Singapore with one 1 GB persistent disk mounted at `/var/data`.
 
-Source: [parag-bitsp/Deal-Signal](https://github.com/parag-bitsp/Deal-Signal). Management: [Render service dashboard](https://dashboard.render.com/web/srv-dbcbc9cs728c73ejqc0g). Automatic deployments are off. The earlier private `dealsignal` repository is retained separately; the deployed service uses `Deal-Signal`.
+Source: [parag-bitsp/Deal-Signal](https://github.com/parag-bitsp/Deal-Signal). Management: [Render service dashboard](https://dashboard.render.com/web/srv-dbcbc9cs728c73ejqc0g). Automatic deployments are off. The unused private `dealsignal` duplicate was deleted; the deployed service uses `Deal-Signal`. The resume link [bit.ly/3TTC5rb](https://bit.ly/3TTC5rb) opens the guide directly and is listed in the repository's README and website field.
 
 The existing free Hobby workspace can run a paid **Starter web service**. Paid compute does not sleep when idle. The initial budget is **USD 7/month compute + USD 0.25/month for a 1 GB disk**, before tax and any usage overages. Do not upgrade the workspace to Pro merely to prevent sleeping. Each additional app needs its own service and, if needed, disk.
 

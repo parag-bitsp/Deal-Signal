@@ -2,7 +2,9 @@
 
 A local sales pipeline intelligence MVP for a fictional Indian B2B SaaS company. Every customer interaction is synthetic. All money is INR.
 
-[Open the live demo](https://dealsignal-48tc.onrender.com) or [start the guided walkthrough](https://dealsignal-48tc.onrender.com/guide). The demo uses shared synthetic data; no password is required.
+**[Live demo and guided walkthrough — bit.ly/3TTC5rb](https://bit.ly/3TTC5rb)**
+
+The resume link opens the demo guide directly. [Direct guide URL](https://dealsignal-48tc.onrender.com/guide) · [Open the app](https://dealsignal-48tc.onrender.com). The demo uses shared synthetic data; no password is required.
 
 ## Start on this computer
 
