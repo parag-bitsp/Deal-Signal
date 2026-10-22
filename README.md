@@ -48,7 +48,13 @@ Production mode runs the last build. Rebuild after source changes. Development m
 
 ## Five-minute demonstration
 
-Hiring managers can open **Demo guide** in the sidebar, or **Read the demo script** on Revenue intelligence. The six-step script includes links and expected results. **Start guided demo** opens a companion panel that remembers the current step in the browser tab as the reader navigates. No login, API key, or live AI call is required. Visitors share saved decisions; the guide explains how to inspect an existing approval without resetting the dataset.
+Hiring managers can open **Read the demo script** on Revenue intelligence, or use the resume link above to open `/guide`. The six-step script includes links and expected results. **Start guided demo** opens a companion panel that remembers the current step in the browser tab as the reader navigates. No login, API key, or live AI call is required. Visitors share saved decisions; the guide explains how to inspect an existing approval without resetting the dataset.
+
+## Saved call traces and cost
+
+Under **Review & learn**, **View call traces and cost** opens `/traces`. Search saved model calls and inspect their recorded token usage and estimated INR cost. The screen reads up to 200 saved entries in the current demo persona's scope; duplicate copies of the same call count once. Viewing or refreshing it makes no model requests.
+
+Default GPT-5 mini estimates use published token rates and an illustrative conversion of ₹90 per USD, not a live exchange quote. All displayed costs and token rates are in INR. Missing usage or unsupported pricing stays unavailable; partial totals are labeled. Estimates exclude hosting and taxes and are not billing statements. Original request payloads, raw provider responses and durations were not saved for older runs. The trace screen shows a saved source-hash comparison. The existing `/guide` resume destination remains available.
 
 1. Open **Revenue intelligence**. The unsupported Commit KPI measures the gap between rep-reported Commit and complete customer support.
 2. Investigate **Aster Manufacturing**, the first opportunity, valued at **₹20 lakh**.
@@ -60,6 +66,7 @@ Hiring managers can open **Demo guide** in the sidebar, or **Read the demo scrip
 
 ## Included
 
+- Home-page feedback form with a 1–5 star rating and optional text. Feedback is saved in the SQLite `feedback` table and retained when synthetic demo data is reset; feedback has no public read endpoint.
 - Three interconnected workspaces, account investigation, activity timeline, close-date history and source inspection.
 - 150 opportunities, 20 reps, four managers, stakeholders, source records, dated category/stage histories and 20 deliberate scenarios.
 - Customer inactivity, missing next steps, zombie candidates, repeated slippage, commitment verification and procurement timeline checks.

@@ -1,0 +1,12 @@
+---
+description: Develop locally and obtain fresh user approval before every live deployment.
+alwaysApply: true
+---
+
+# Deployment approval
+
+- Make changes and complete focused testing locally first.
+- Present the completed changes and verification, then explicitly ask whether to deploy them to the live app.
+- Wait for the user's approval before each deployment. Approval for an earlier release does not authorize later releases.
+- Keep Render automatic deployments disabled. Any action that triggers a production deployment, including a push when automatic deployment is enabled, requires that release's approval first.
+- Requests to edit, fix, or test the app do not authorize a live deployment.

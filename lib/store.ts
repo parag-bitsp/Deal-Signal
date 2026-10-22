@@ -6,10 +6,11 @@ import {historicalSnapshots} from './engine.ts';
 import {hashDeal} from './analysis-context.ts';
 import {withCustomerLanguage} from './customer-language.ts';
 import type {Action, AppData, Dataset, Deal, Snapshot, Analysis} from './types.ts';
+import type {SavedAnalysisRun} from './call-traces.ts';
 export interface DecisionInput {dealId:string;status:Action['status'];draft:string;version:number;key:string;actor:string}
 export class Store {
  db:DatabaseSync;
- constructor(path:string){if(path!==':memory:')mkdirSync(dirname(path),{recursive:true});this.db=new DatabaseSync(path);this.db.exec(`PRAGMA journal_mode=WAL; CREATE TABLE IF NOT EXISTS meta(key TEXT PRIMARY KEY,value TEXT NOT NULL); CREATE TABLE IF NOT EXISTS opportunities(id TEXT PRIMARY KEY,record TEXT NOT NULL); CREATE TABLE IF NOT EXISTS actions(deal_id TEXT PRIMARY KEY,record TEXT NOT NULL); CREATE TABLE IF NOT EXISTS requests(key TEXT PRIMARY KEY,payload TEXT NOT NULL,result TEXT NOT NULL); CREATE TABLE IF NOT EXISTS analysis_runs(id INTEGER PRIMARY KEY AUTOINCREMENT,deal_id TEXT NOT NULL,record TEXT NOT NULL); CREATE TABLE IF NOT EXISTS audit(id INTEGER PRIMARY KEY AUTOINCREMENT,dealId TEXT,event TEXT,actor TEXT,at TEXT,detail TEXT);`);if(!this.db.prepare('SELECT key FROM meta WHERE key=?').get('users'))this.reset();}
+ constructor(path:string){if(path!==':memory:')mkdirSync(dirname(path),{recursive:true});this.db=new DatabaseSync(path);this.db.exec(`PRAGMA journal_mode=WAL; CREATE TABLE IF NOT EXISTS meta(key TEXT PRIMARY KEY,value TEXT NOT NULL); CREATE TABLE IF NOT EXISTS opportunities(id TEXT PRIMARY KEY,record TEXT NOT NULL); CREATE TABLE IF NOT EXISTS actions(deal_id TEXT PRIMARY KEY,record TEXT NOT NULL); CREATE TABLE IF NOT EXISTS requests(key TEXT PRIMARY KEY,payload TEXT NOT NULL,result TEXT NOT NULL); CREATE TABLE IF NOT EXISTS analysis_runs(id INTEGER PRIMARY KEY AUTOINCREMENT,deal_id TEXT NOT NULL,record TEXT NOT NULL); CREATE TABLE IF NOT EXISTS feedback(id INTEGER PRIMARY KEY AUTOINCREMENT,rating INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5),message TEXT NOT NULL,created_at TEXT NOT NULL); CREATE TABLE IF NOT EXISTS audit(id INTEGER PRIMARY KEY AUTOINCREMENT,dealId TEXT,event TEXT,actor TEXT,at TEXT,detail TEXT);`);if(!this.db.prepare('SELECT key FROM meta WHERE key=?').get('users'))this.reset();}
  reset(){const seed=createSeed();this.db.exec('BEGIN IMMEDIATE');try{this.db.exec('DELETE FROM opportunities;DELETE FROM actions;DELETE FROM requests;DELETE FROM audit;DELETE FROM analysis_runs;');this.db.prepare('INSERT OR REPLACE INTO meta VALUES (?,?)').run('users',JSON.stringify({reps:seed.reps,managers:seed.managers}));const stmt=this.db.prepare('INSERT INTO opportunities VALUES (?,?)');for(const d of seed.deals)stmt.run(d.id,JSON.stringify(d));this.db.exec('COMMIT');}catch(e){this.db.exec('ROLLBACK');throw e;}}
  dataset():Dataset{const users=JSON.parse(String(this.db.prepare('SELECT value FROM meta WHERE key=?').get('users')!.value));const deals=this.db.prepare('SELECT record FROM opportunities ORDER BY id').all().map(r=>JSON.parse(String(r.record)));return {...users,deals};}
  read():AppData{const data=this.dataset(),liveAnalyses:Record<string,Analysis>={};for(const row of this.db.prepare('SELECT deal_id,record FROM analysis_runs ORDER BY id DESC').all()){const id=String(row.deal_id);if(liveAnalyses[id])continue;const run:Analysis=JSON.parse(String(row.record)),deal=data.deals.find(d=>d.id===id);if(deal&&run.live?.inputHash===hashDeal(deal))liveAnalyses[id]=run;}return {...data,liveAnalyses,actions:this.db.prepare('SELECT record FROM actions').all().map(r=>JSON.parse(String(r.record))),audit:this.db.prepare('SELECT * FROM audit ORDER BY id DESC LIMIT 200').all() as unknown as AppData['audit'],snapshots:makeSnapshots(data.deals)};}
@@ -31,6 +32,17 @@ export class Store {
   }catch(e){this.db.exec('ROLLBACK');throw e;}
  }
  saveAnalysis(dealId:string,analysis:Analysis){const deal=this.dataset().deals.find(d=>d.id===dealId);if(!deal||!analysis.live||analysis.live.inputHash!==hashDeal(deal))throw new Error('Stale analysis input; reload and retry');this.db.prepare('INSERT INTO analysis_runs(deal_id,record) VALUES (?,?)').run(dealId,JSON.stringify(analysis));}
+ savedAnalysisRuns(dealIds:string[],id?:number):SavedAnalysisRun[]{
+  const ids=[...new Set(dealIds)];if(!ids.length)return [];
+  const rows=this.db.prepare(`SELECT id,deal_id,record FROM analysis_runs WHERE deal_id IN (${ids.map(()=>'?').join(',')})${id===undefined?'':' AND id=?'} ORDER BY id DESC LIMIT 200`).all(...ids,...(id===undefined?[]:[id]));
+  return rows.map(row=>({id:Number(row.id),dealId:String(row.deal_id),analysis:JSON.parse(String(row.record)) as Analysis}));
+ }
+ saveFeedback(input:{rating:unknown;message:unknown}){
+  if(typeof input.rating!=='number'||!Number.isInteger(input.rating)||input.rating<1||input.rating>5)throw new Error('Choose a rating from 1 to 5');
+  if(typeof input.message!=='string'||input.message.length>2000)throw new Error('Feedback must be at most 2,000 characters');
+  const result=this.db.prepare('INSERT INTO feedback(rating,message,created_at) VALUES (?,?,?)').run(input.rating,input.message.trim(),new Date().toISOString());
+  return {id:Number(result.lastInsertRowid)};
+ }
  close(){this.db.close();}
 }
 export function makeSnapshots(deals:Deal[]):Snapshot[]{return historicalSnapshots(deals);}

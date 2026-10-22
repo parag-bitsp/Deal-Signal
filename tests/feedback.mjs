@@ -1,0 +1,37 @@
+import {createRequire} from 'node:module';
+import assert from 'node:assert/strict';
+const require=createRequire(import.meta.url),{chromium}=require(process.env.PLAYWRIGHT_PATH||'C:/Users/PARAG PANDE/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const base=process.env.TRACE_TEST_URL||'http://127.0.0.1:3214';
+assert.equal((await fetch(base+'/api/feedback')).status,404,'Feedback is not publicly readable');
+for(const body of [{rating:0,message:''},{rating:5,message:'x'.repeat(2001)}])assert.equal((await fetch(base+'/api/feedback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})).status,400);
+assert.equal((await fetch(base+'/api/feedback',{method:'POST',headers:{'Content-Type':'application/json',origin:'https://other.example'},body:JSON.stringify({rating:5,message:''})})).status,403);
+const browser=await chromium.launch({headless:true,executablePath:process.env.BROWSER_EXE||'C:/Program Files/Google/Chrome/Application/chrome.exe'});
+try{
+ const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[],modelRequests=[];
+ page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(/\/api\/(analyze|ai\/status)$/.test(new URL(r.url()).pathname))modelRequests.push(r.url());});
+ await page.goto(base+'/');const link=page.getByRole('button',{name:'Leave feedback',exact:true});await link.waitFor();
+ assert.equal((await page.locator('.org-switch').innerText()).trim(),'D\nDemo organization');
+ assert.doesNotMatch(await page.locator('.org-switch').innerText(),/Northlane/);
+ await link.click();const dialog=page.getByRole('dialog',{name:'Leave feedback',exact:true});await dialog.waitFor();
+ assert.equal(await dialog.getByRole('button',{name:'Submit feedback',exact:true}).isEnabled(),false);
+ await dialog.locator('.feedback-stars label').nth(3).click();
+ assert.equal(await dialog.getByRole('radio',{name:'4 stars',exact:true}).isChecked(),true);
+ await dialog.getByLabel('Your feedback (optional)',{exact:true}).fill('Feedback browser check: clear evidence and useful cost view.');
+ await page.screenshot({path:'.cache/feedback-desktop.png'});
+ await page.route('**/api/feedback',route=>route.fulfill({status:503,json:{error:'temporary test failure'}}));
+ await dialog.getByRole('button',{name:'Submit feedback',exact:true}).click();await dialog.getByRole('alert').waitFor();
+ assert.equal(await dialog.getByRole('radio',{name:'4 stars',exact:true}).isChecked(),true);
+ await page.unroute('**/api/feedback');
+ const saved=page.waitForResponse(r=>r.url()===base+'/api/feedback'&&r.request().method()==='POST');
+ await dialog.getByRole('button',{name:'Submit feedback',exact:true}).click();assert.equal((await saved).status(),201);
+ await page.getByRole('dialog',{name:'Thank you for your feedback',exact:true}).waitFor();
+ await page.getByRole('button',{name:'Done',exact:true}).click();await link.focus();await link.click();
+ assert.equal(await page.getByRole('radio',{checked:true}).count(),0);await page.keyboard.press('Escape');assert.equal(await page.getByRole('dialog').count(),0);
+ await page.setViewportSize({width:390,height:844});await link.click();
+ await page.locator('.feedback-stars label').nth(4).click();
+ assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+ await page.screenshot({path:'.cache/feedback-mobile.png'});
+ await page.keyboard.press('Escape');
+ assert.deepEqual(errors,[]);assert.deepEqual(modelRequests,[]);
+ console.log('PASS: feedback validation, cross-origin refusal, home link, organization label, star selection, text, retry, saved confirmation, close/reopen and mobile. No model calls.');
+}finally{await browser.close();}
