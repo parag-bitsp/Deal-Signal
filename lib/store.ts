@@ -4,6 +4,7 @@ import {dirname,join} from 'node:path';
 import {createSeed} from './seed.ts';
 import {historicalSnapshots} from './engine.ts';
 import {hashDeal} from './analysis-context.ts';
+import {withCustomerLanguage} from './customer-language.ts';
 import type {Action, AppData, Dataset, Deal, Snapshot, Analysis} from './types.ts';
 export interface DecisionInput {dealId:string;status:Action['status'];draft:string;version:number;key:string;actor:string}
 export class Store {
@@ -21,9 +22,9 @@ export class Store {
    const row=this.db.prepare('SELECT record FROM actions WHERE deal_id=?').get(input.dealId);const current:Action|undefined=row?JSON.parse(String(row.record)):undefined;
    if((current?.version??0)!==input.version)throw new Error('Stale action version; reload and retry');
    if(input.status==='Completed'&&current?.status!=='Approved')throw new Error('Approve the action before completing it');
-   if(input.status==='Completed'&&current?.draft!==input.draft)throw new Error('Completion must preserve the approved draft');
+   if(input.status==='Completed'&&current?.draft!==input.draft&&withCustomerLanguage(current?.draft)!==input.draft)throw new Error('Completion must preserve the approved draft');
    if(current?.status==='Completed')throw new Error('Completed action cannot be changed');
-   const at=new Date().toISOString();const result:Action={id:`action-${input.dealId}`,dealId:input.dealId,status:input.status,draft:input.draft,version:input.version+1,updatedAt:at,actor:actor.name};
+   const at=new Date().toISOString();const result:Action={id:`action-${input.dealId}`,dealId:input.dealId,status:input.status,draft:input.status==='Completed'?current!.draft:input.draft,version:input.version+1,updatedAt:at,actor:actor.name};
    this.db.prepare('INSERT OR REPLACE INTO actions VALUES (?,?)').run(input.dealId,JSON.stringify(result));
    this.db.prepare('INSERT INTO audit(dealId,event,actor,at,detail) VALUES (?,?,?,?,?)').run(input.dealId,input.status,actor.name,at,JSON.stringify({before:current??null,after:result,provider:this.read().liveAnalyses?.[input.dealId]?.provider??'Simulated analysis',runId:this.read().liveAnalyses?.[input.dealId]?.live?.runId??null}));
    this.db.prepare('INSERT INTO requests VALUES (?,?,?)').run(input.key,JSON.stringify(input),JSON.stringify(result));this.db.exec('COMMIT');return result;

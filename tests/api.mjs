@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict';
 const base=process.env.BASE_URL??'http://127.0.0.1:3000';
 const health=await fetch(base+'/api/health');assert.equal(health.status,200);assert.deepEqual(await health.json(),{status:'ok',database:'ready'});
+const aiStatus=await(await fetch(base+'/api/ai/status')).json();assert.equal(aiStatus.configured,false,'The app must stay cached-only even if the server has an API key');
+const live=await fetch(base+'/api/analyze',{method:'POST',headers:{'Content-Type':'application/json',Origin:base},body:JSON.stringify({dealId:'opp-001',provider:'openai'})});assert.equal(live.status,503);assert.match((await live.json()).error,/saved or synthetic results only/);
 const data=await(await fetch(base+'/api/data')).json();assert.equal(data.deals.length,150);
+assert.ok(!/\bbuyers?\b/i.test(JSON.stringify(data)),'Legacy persisted data must use customer wording in API responses');
 const session=await fetch(base+'/api/session',{method:'POST',headers:{'Content-Type':'application/json',Origin:base},body:JSON.stringify({actor:'m1'})});assert.equal(session.status,200,'Same-origin browser writes must be accepted');
 const bad=await fetch(base+'/api/session',{method:'POST',headers:{'Content-Type':'application/json',Origin:'https://example.com'},body:JSON.stringify({actor:'m1'})});assert.equal(bad.status,403);
 const sim=await(await fetch(base+'/api/simulate',{method:'POST',headers:{'Content-Type':'application/json',Origin:base},body:JSON.stringify({overrides:[{id:'opp-001',category:'Best Case'}]})})).json();assert.equal(sim.delta,-2000000);

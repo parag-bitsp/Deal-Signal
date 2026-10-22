@@ -1,5 +1,6 @@
 import type {Analysis, Category, ClaimResult, Deal, Finding, Summary, Snapshot} from './types.ts';
 import { AS_OF } from './seed.ts';
+import {withCustomerLanguage} from './customer-language.ts';
 const days=(a:string,b:string)=>Math.floor((Date.parse(a)-Date.parse(b))/86400000);
 export function analyze(deal:Deal,asOf=AS_OF,claimResults?:ClaimResult[]):Analysis {
  const records=deal.activities.filter(a=>a.date<=asOf);
@@ -34,7 +35,7 @@ export function analyze(deal:Deal,asOf=AS_OF,claimResults?:ClaimResult[]):Analys
  const title=contradictions.length||claims.some(c=>c.kind==='approval'&&c.status!=='Verified')?'Arrange an approval-alignment meeting':inactiveDays>=21?'Requalify the opportunity with the buyer':missingStep?'Agree a dated next step':'Confirm the purchasing plan';
  return {risk,claims,findings,inactiveDays,pushes:pushes.length,coverage:buyer.length?'Supplied deal records':'No buyer records',supported,asOf,provider:'Simulated analysis',recommendation:{title,rationale:'Resolve the specific evidence gaps before relying on this commitment.',draft:`Hi ${deal.stakeholders[0]?.name.split(' ')[0]??'team'},\n\nCould we arrange a 30-minute approval-alignment meeting with your finance decision-maker? We would like to confirm budget approval, the purchasing timeline, and the remaining procurement steps for ${deal.name}.\n\nWould 23 October work for your team?\n\nThank you.`}};
 }
-export function resolveAnalysis(deal:Deal,saved?:Analysis):Analysis {return saved?{...saved,...analyze(deal,AS_OF,saved.claims),provider:saved.provider,recommendation:saved.recommendation,live:saved.live}:analyze(deal);}
+export function resolveAnalysis(deal:Deal,saved?:Analysis):Analysis {return withCustomerLanguage(saved?{...saved,...analyze(deal,AS_OF,saved.claims),provider:saved.provider,recommendation:saved.recommendation,live:saved.live}:analyze(deal));}
 export function summarize(deals:Deal[],saved:Record<string,Analysis>={}):Summary {
  const summary:Summary={pipeline:0,commit:0,supported:0,gap:0,coverage:null,count:deals.length,high:0,medium:0,low:0,slipped:0};
  for(const d of deals){const a=resolveAnalysis(d,saved[d.id]);summary.pipeline+=d.value;summary[a.risk.toLowerCase() as 'high'|'medium'|'low']++;if(a.pushes>=2)summary.slipped++;if(d.category==='Commit'){summary.commit+=d.value;if(a.supported)summary.supported+=d.value;}}
